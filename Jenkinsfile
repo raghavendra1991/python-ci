@@ -22,7 +22,7 @@ pipeline {
 	      scannerHome = tool 'SonarQube Scanner'
 	  }
           steps {
-	      withSonarQubeEnv('admin') {
+	      withSonarQubeEnv(installationName: 'admin', credentialsId: 'sonarqube') {
 		sh '${scannerHome}/bin/sonar-scanner \
 		 -D sonar.projectKey=python-app'	
 	      }
