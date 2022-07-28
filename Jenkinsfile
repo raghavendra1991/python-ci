@@ -8,12 +8,15 @@ pipeline {
    }
    stages {
       stage('Build') {
-	      agent {
-		 label 'slave' 
-	      }
-             steps {
-	         echo "hello world"
-	     }
-	}
-    }	
+	  agent {
+	     label 'slave' 
+	  }
+          steps {
+	     echo "hello world"
+	  }
+      }
+      stage ('image') {
+	  agent slave { dockerfile true}
+      }
+   }	
 }
