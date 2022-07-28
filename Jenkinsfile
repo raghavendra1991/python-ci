@@ -9,10 +9,10 @@ pipeline {
    stages {
       stage('Build') {
 	      agent {
-		      label 'slave' { 'dockerfile true' }
+		 label 'slave' 
 	      }
              steps {
-	         sh 'python3 -m pytest'
+	         echo "hello world"
 	     }
 	}
     }	
