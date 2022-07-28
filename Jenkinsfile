@@ -19,8 +19,7 @@ pipeline {
 	    }
             steps {
 		withSonarQubeEnv('admin') {
-		   sh '${scannerHome}/bin/sonar-scanner \
-		   -D sonar.projectKey=python-app'	
+		   sh '${scannerHome}/bin/sonar-scanner --version'	
 		}
             }
         }
