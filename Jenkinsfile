@@ -1,6 +1,6 @@
 pipeline {
    agent {
-      label 'slave' { dockerfile true }
+      label slave { dockerfile true }
    }
    environment {
       http_proxy = 'http://127.0.0.1:3128/'
