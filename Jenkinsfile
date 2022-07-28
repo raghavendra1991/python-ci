@@ -8,9 +8,7 @@ pipeline {
    }
    stages {
       stage('Build') {
-	  agent { 
-             label 'slave' docker { dockerfile true }
-          }  
+	  agent { label 'slave' { dockerfile true }}  
           steps {
 	     echo "hello world"
 	  }
