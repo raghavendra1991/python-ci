@@ -9,14 +9,11 @@ pipeline {
    stages {
       stage('Build') {
 	  agent {
-	     label 'slave' 
+	     label 'slave' { dockerfile true}
 	  }
           steps {
 	     echo "hello world"
 	  }
-      }
-      stage ('image') {
-	  agent slave { dockerfile true}
       }
    }	
 }
