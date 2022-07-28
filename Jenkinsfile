@@ -16,7 +16,9 @@ pipeline {
 	  }
       }
       stage ('Build') {
-	  agent { dockerfile true}
+	      agent 'slave'{
+		      { dockerfile true}
+	      }
 	  steps {
 	      sh 'python3 -m pytest'
 	  }
