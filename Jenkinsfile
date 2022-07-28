@@ -7,17 +7,10 @@ pipeline {
       socks_proxy = 'socks://127.0.0.1:3128/'
    }
    stages {
-      stage ('Checkout') {
-	  agent { 
-	     label 'slave'
-	  }
-          steps {
-	     echo "Checkout slave agent"
-	  }
-      }
       stage ('Build') {
-	      agent { label 'slave' dockerfile true 
-	      }
+	  agent { 
+	      label 'slave' dockerfile true 
+	  }
 	  steps {
 	      sh 'python3 -m pytest'
 	  }
