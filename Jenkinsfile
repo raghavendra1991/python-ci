@@ -6,8 +6,20 @@ pipeline {
    	ftp_proxy = 'http://127.0.0.1:3128/'
 	socks_proxy = 'socks://127.0.0.1:3128/'
     }
-  
-   stages {    
+    options {
+        // This is required if you want to clean before build
+        skipDefaultCheckout(true)
+    }
+    stages {
+         stage('Build') {
+            steps {
+                // Clean before build
+                cleanWs()
+                // We need to explicitly checkout from SCM here
+                checkout scm
+                echo "Building ${env.JOB_NAME}..."
+            }
+        } 
 	stage('test') {
              steps {
 	         sh 'python3 -m pytest'
