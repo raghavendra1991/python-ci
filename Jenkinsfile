@@ -10,7 +10,7 @@ pipeline {
    }
    stages {
       stage('Build') {
-	  agent { dockerfile true }
+	  agent slave { dockerfile true }
           steps {
 	     echo "python3 -m pytest"
 	  }
