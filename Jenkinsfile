@@ -14,6 +14,18 @@ pipeline {
 		 sh 'python3 -m coverage xml -o coverage/coverage.xml'
 	     }
 	}
+	stage ('Test & SonarQube Analysis') {
+	    environment {
+		scannerHome = tool 'SonarQube Scanner'
+	    }
+            steps {
+		withSonarQubeEnv('admin') {
+		   sh '${scannerHome}/bin/sonar-scanner \
+		   -D sonar.projectKey=python-app \
+		   -D sonar.python.coverage.reportPaths=coverage.xml'	
+		}
+            }
+        }
         stage ('Archive artifacts') {
             steps {
                 archiveArtifacts artifacts: 'coverage/'
