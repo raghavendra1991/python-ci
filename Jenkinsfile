@@ -1,5 +1,7 @@
 pipeline {
-   agent none
+   agent {
+      label 'slave'
+   }
    environment {
       http_proxy = 'http://127.0.0.1:3128/'
       https_proxy = 'http://127.0.0.1:3128/'
@@ -7,18 +9,10 @@ pipeline {
       socks_proxy = 'socks://127.0.0.1:3128/'
    }
    stages {
-      stage ('Checkout') {
-	  agent { 
-	     label 'slave'
-	  }
+      stage('Build') {
+	  agent { dockerfile true }
           steps {
-	     echo "Checkout slave agent"
-	  }
-      }
-      stage ('Build') {
-	  agent { dockerfile true}
-	  steps {
-	      sh 'python3 -m pytest'
+	     echo "python3 -m pytest"
 	  }
       }
    }	
