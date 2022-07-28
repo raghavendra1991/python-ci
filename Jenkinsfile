@@ -8,7 +8,7 @@ pipeline {
    }
    stages {
       stage('Build') {
-	  agent slave { dockerfile true }
+	  agent { slave dockerfile true }
           steps {
 	     echo "hello world"
 	  }
