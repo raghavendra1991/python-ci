@@ -1,6 +1,6 @@
 pipeline {
    agent {
-      label 'slave' {
+      label 'slave'
    }
    environment {
       http_proxy = 'http://127.0.0.1:3128/'
