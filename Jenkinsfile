@@ -35,7 +35,7 @@ pipeline {
 		   spec: '''{
  			  "files" :[
 			    {
-		               "pattern": "/coverage",
+		               "pattern": "coverage/",
 		               "target": "pythonapp/",
 	                       "recursive": "false"
 			    }
