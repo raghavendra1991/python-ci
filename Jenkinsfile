@@ -71,7 +71,7 @@ pipeline {
  			"files" :[
 			  {
 		            "pattern": "coverage/",
-		            "target": "pythonapplication/",
+		            "target": "python-ci/",
 	                    "recursive": "false"
 	         	  }
 		        ]
