@@ -13,16 +13,6 @@ pipeline {
 		 sh 'python3 -m coverage xml -o coverage/coverage.xml'
 	     }
 	}
-	stage ('Test & SonarQube Analysis') {
-	    environment {
-		scannerHome = tool 'SonarQube Scanner'
-	    }
-            steps {
-		withSonarQubeEnv('admin') {
-		   sh '${scannerHome}/bin/sonar-scanner --version'	
-		}
-            }
-        }
         stage ('Archive artifacts') {
             steps {
                 archiveArtifacts artifacts: 'coverage/'
