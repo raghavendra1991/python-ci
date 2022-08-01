@@ -26,7 +26,7 @@ pipeline {
          agent {
 	     dockerfile {
       	        filename 'Dockerfile'
-   	        label 'slave'
+   	        reuseNode true
 	     }	        
 	 }
 	 steps {
