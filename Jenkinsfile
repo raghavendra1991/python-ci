@@ -1,14 +1,13 @@
 pipeline {
-  agent none
+  agent {
+	label 'slave'
+  }
   options {
         // This is required if you want to clean before build
         skipDefaultCheckout(true)
   }
-  stages {
-      stage('CleanUp WorkSpace & Git Checkout') {
-	  agent { 
-	      label 'slave'
-	  }
+  stages { 
+      stage('CleanUp WorkSpace & Git Checkout) {
           steps {
               // Clean before build
               cleanWs()
@@ -42,9 +41,6 @@ pipeline {
 	 }
       }	 
       stage('Code Analysis') {
-	  agent {
-     	       label 'slave'
-    	  }
 	  environment {
 	       scannerHome = tool 'SonarQube Scanner'
 	  }
@@ -62,9 +58,6 @@ pipeline {
 	  }
       }
       stage('Deploy Atrifacts') {
-	  agent {
-     	       label 'slave'
-    	  }
 	  steps {
 	      rtUpload (
 		 serverId: 'JFrog',
