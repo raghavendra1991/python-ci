@@ -54,7 +54,19 @@ pipeline {
    }
    post {
 	 always {
-	     echo "Project Succeeded"
-	}
+	     echo 'I have finished'
+	 }
+	 success { 
+	     echo 'I succeeded!'
+	 }
+	 unstable {
+	     echo 'I am unstable :/'
+	 }
+	 failure {
+             echo 'I failed :('
+	 }
+	 changed {
+	     echo 'Things are different ...'
+	 }
    }	  
 }
