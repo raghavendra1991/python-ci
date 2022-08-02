@@ -52,10 +52,10 @@ pipeline {
 	     )
 	 }
       }
-      post {
+   }
+   post {
 	 always {
 	     echo "Project Succeeded"
-	 }
-      }	  
-   }
+	}
+   }	  
 }
