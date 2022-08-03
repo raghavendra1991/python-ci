@@ -1,14 +1,25 @@
 pipeline {
-  agent none
-  stages { 	  
+  agent {
+	label 'slave'
+  }
+  stages { 
+      stage('CleanUp WorkSpace & Git Checkout') {
+          steps {
+              // Clean before build
+              cleanWs()
+              // We need to explicitly checkout from SCM here
+              checkout scm
+          }
+      }	  
       stage('Build & Test') {
          agent {
 	     dockerfile {
       	        filename 'Dockerfile'
-   	        label 'slave'
+   	        reuseNode true
 	     }	        
 	 }
 	 steps {
+	      echo "Building Image and Conatiner"
 	      sh 'python3 -m pytest'
 	      sh 'python3 -m coverage xml -o coverage/coverage.xml'
 	 }
@@ -33,8 +44,7 @@ pipeline {
  			"files" :[
 			  {
 		            "pattern": "coverage/",
-		            "target": "python-ci/",
-	                    "recursive": "false"
+		            "target": "python-ci/"
 	         	  }
 		        ]
 		 }'''
@@ -55,8 +65,8 @@ pipeline {
 	 failure {
              echo 'I failed :('
 	 }
-	 changed {
-	     echo 'Things are different ...'
-	 }
+	  changed {
+            echo 'Things are different...'
+        }
    }	  
 }
