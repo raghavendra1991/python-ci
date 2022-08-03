@@ -1,49 +1,29 @@
 pipeline {
-  agent none
-  options {
-        // This is required if you want to clean before build
-        skipDefaultCheckout(true)
+  agent {
+	label 'slave'
   }
-  stages {
-      stage('CleanUp WorkSpace') {
-	  agent { 
-	      label 'slave'
-	  }
+  stages { 
+      stage('CleanUp WorkSpace & Git Checkout') {
           steps {
               // Clean before build
               cleanWs()
               // We need to explicitly checkout from SCM here
               checkout scm
-              echo "Building ${env.JOB_NAME}..."
-          }
-	  post {
-              // Clean after build
-              always {
-		 echo "I Succeeded"
-              }
           }
       }	  
       stage('Build & Test') {
          agent {
 	     dockerfile {
       	        filename 'Dockerfile'
-   	        label 'slave'
+   	        reuseNode true
 	     }	        
 	 }
 	 steps {
 	      sh 'python3 -m pytest'
 	      sh 'python3 -m coverage xml -o coverage/coverage.xml'
 	 }
-	 post {
-	      always {
-		   archiveArtifacts artifacts: 'coverage/'
-      	      }
-	 }
       }	 
       stage('Code Analysis') {
-	  agent {
-     	       label 'slave'
-    	  }
 	  environment {
 	       scannerHome = tool 'SonarQube Scanner'
 	  }
@@ -54,16 +34,8 @@ pipeline {
 		      -D sonar.python.coverage.reportPaths=coverage.xml'
 	      }
           }
-	  post {
-	     always {
-		   echo "I Succeeded"
-	     }
-	  }
       }
       stage('Deploy Atrifacts') {
-	  agent {
-     	       label 'slave'
-    	  }
 	  steps {
 	      rtUpload (
 		 serverId: 'JFrog',
@@ -71,18 +43,26 @@ pipeline {
  			"files" :[
 			  {
 		            "pattern": "coverage/",
-		            "target": "python-ci/",
-	                    "recursive": "false"
+		            "target": "python-ci/"
 	         	  }
 		        ]
 		 }'''
 	     )
 	 }
-	  post {
-	     always {
-		   echo "I Succeeded"
-	     }
-	  }
       }
    }
+   post {
+	 always {
+	     echo 'I have finished'
+	 }
+	 success { 
+	     echo 'I succeeded!'
+	 }
+	 unstable {
+	     echo 'I am unstable :/'
+	 }
+	 failure {
+             echo 'I failed :('
+	 }
+   }	  
 }
