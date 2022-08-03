@@ -1,21 +1,11 @@
 pipeline {
-  agent {
-	label 'slave'
-  }
-  stages { 
-      stage('CleanUp WorkSpace & Git Checkout') {
-          steps {
-              // Clean before build
-              cleanWs()
-              // We need to explicitly checkout from SCM here
-              checkout scm
-          }
-      }	  
+  agent none
+  stages { 	  
       stage('Build & Test') {
          agent {
 	     dockerfile {
       	        filename 'Dockerfile'
-   	        reuseNode true
+   	        label 'slave'
 	     }	        
 	 }
 	 steps {
