@@ -1,72 +1,45 @@
 pipeline {
-  agent {
-	label 'slave'
-  }
-  stages { 
-      stage('CleanUp WorkSpace & Git Checkout') {
-          steps {
-              // Clean before build
-              cleanWs()
-              // We need to explicitly checkout from SCM here
-              checkout scm
-          }
-      }	  
+  agent none
+  stages {
       stage('Build & Test') {
-         agent {
-	     dockerfile {
-      	        filename 'Dockerfile'
-   	        reuseNode true
-	     }	        
-	 }
-	 steps {
-	      echo "Building Image and Conatiner"
-	      sh 'python3 -m pytest'
-	      sh 'python3 -m coverage xml -o coverage/coverage.xml'
-	 }
-      }	 
-      stage('Code Analysis') {
-	  environment {
-	       scannerHome = tool 'SonarQube Scanner'
-	  }
-	  steps {
-	      withSonarQubeEnv('admin') {
-		   sh '${scannerHome}/bin/sonar-scanner \
-		      -D sonar.projectKey=reports \
-		      -D sonar.python.coverage.reportPaths=coverage.xml'
-	      }
-          }
-      }
-      stage('Deploy Atrifacts') {
-	  steps {
-	      rtUpload (
-		 serverId: 'JFrog',
-		 spec: '''{
- 			"files" :[
-			  {
-		            "pattern": "coverage/",
-		            "target": "python-ci/"
-	         	  }
-		        ]
-		 }'''
-	     )
-	 }
-      }
-   }
-   post {
-	 always {
-	     echo 'I have finished'
-	 }
-	 success { 
-	     echo 'I succeeded!'
-	 }
-	 unstable {
-	     echo 'I am unstable :/'
-	 }
-	 failure {
-             echo 'I failed :('
-	 }
-	  changed {
-            echo 'Things are different...'
+	        agent {
+    		    dockerfile {
+      		        filename 'Dockerfile'
+      			    label 'slave'
+    		    }
+  		    }
+		    steps {
+	            sh 'python3 -m pytest'
+	  	    }
+	    }
+		stage('Code Analysis & Deploy Atrifacts') {
+	        agent {
+      		    label 'slave'
+    	    }
+		    environment {
+	   	    	scannerHome = tool 'SonarQube Scanner'
+	  	    }
+		    steps {
+	      	    withSonarQubeEnv('admin') {
+	            sh '${scannerHome}/bin/sonar-scanner \
+	 	            -D sonar.projectKey=python-app'	
+	      	    }
+            }
         }
-   }	  
-}
+        stage('Deploy Atrifacts') {
+            steps {
+               rtUpload (
+                   serverId: 'JFrog',
+                   spec: '''{
+                      "files" :[
+                            {
+                               "pattern": "coverage/",
+                               "target": "python-ci/"
+                            }
+                       ]
+                  }'''
+               )
+            }
+        }
+    }
+} 
